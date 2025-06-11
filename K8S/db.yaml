@@ -20,8 +20,10 @@ spec:
             cpu: "500m"
         ports:
         - containerPort:27017
-        volumeMount:
-          name: hostVolume
-      volume:
-        name: hostVolume
-        type: emptyDir
+        volumeMounts:
+        - name: db_volume
+          mountPath: data
+  volumes:
+  - name: db_volume
+    persistentVolumeClaim:
+      claimName: my-pvc
