@@ -1,0 +1,117 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+             sh  'docker build  -t frontEnd -f frontEnd'
+             sh  'docker build  -t backEnd -f backEnd'
+             sh  'docker build  -t database -f database'
+            }
+        }
+
+     stage('Push') {
+            steps {
+             sh  'docker push frontEnd:$BUILD_ID'
+             sh  'docker push backEnd:$BUILD_ID' 
+             sh  'docker push database:$BUILD_ID'  
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script{
+                docker push frontEnd backEnd database
+                }
+            }
+        }
+    }
+}

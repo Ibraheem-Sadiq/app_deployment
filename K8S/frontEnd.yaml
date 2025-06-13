@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontEnd
+  name: client
 spec:
   selector:
     matchLabels:
-      app: frontEnd
+      app: client
   replicas: 2
   template:
     metadata:
       labels:
-        app: frontEnd
+        app: client
     spec:
       containers:
-      - name: frontEnd
-        image: 
+      - name: client
+        build: client
         ports:
         - containerPort: 3001

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dataBaseService
+  name: mongodb
 spec:
   selector:
-    app: dataBase
+    app: mongodb
   ports:
   - port: 27017
     targetPort: 27017

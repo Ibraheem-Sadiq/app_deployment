@@ -1,19 +1,37 @@
+
+
+
+
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backEnd
+  name: server
 spec:
   selector:
     matchLabels:
-      app: backEnd
+      app: server
   replicas: 2
   template:
     metadata:
       labels:
-        app: backEnd
+        app: server
     spec:
       containers:
-      - name: backEnd
-        image: 
+      - name: server
+        build: server
         ports:
         - containerPort: 80
+        command: ["sh","-c"]
+        args: ["npm run seed:db admin@devops.com admin123 && npm start"]
+        ENV:
+            - name: PORT
+              value: 3000
+            - name: BASE_API_URL
+              value: api
+            - name: CLIENT_URL
+              value: http://localhost:8080
+            - name: JWT_SECRET
+              value: update_your_JWT_secret
+            - name: MONGO_URI
+              value: mongodb://mongo:27017/mern_ecommerce
