@@ -88,9 +88,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-             sh  'docker build  -t frontEnd -f frontEnd'
-             sh  'docker build  -t backEnd -f backEnd'
-             sh  'docker build  -t database -f database'
+             sh  'docker build  -t frontEnd:$BUILD_ID  server'
+             sh  'docker build  -t backEnd:$BUILD_ID  client'
+             sh  'docker build  -t database:$BUILD_ID  database'
             }
         }
 
@@ -108,9 +108,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                script{
-                docker push frontEnd backEnd database
-                }
+      
             }
         }
     }
