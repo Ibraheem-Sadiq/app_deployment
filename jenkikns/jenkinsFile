@@ -106,9 +106,9 @@ pipeline {
                 echo 'Testing..'
             }
         }
-        stage('Deploy') {
+        stage('notify argocd by updating version') {
             steps {
-      
+                sh  '($BUILD_NUMBER) > version.txt'
             }
         }
     }
