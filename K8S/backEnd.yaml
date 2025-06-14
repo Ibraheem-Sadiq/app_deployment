@@ -21,17 +21,17 @@ spec:
       - name: server
         build: server
         ports:
-        - containerPort: 80
+          - containerPort: 3000
         command: ["sh","-c"]
         args: ["npm run seed:db admin@devops.com admin123 && npm start"]
         ENV:
-            - name: PORT
-              value: 3000
-            - name: BASE_API_URL
-              value: api
-            - name: CLIENT_URL
-              value: http://localhost:8080
-            - name: JWT_SECRET
-              value: update_your_JWT_secret
-            - name: MONGO_URI
-              value: mongodb://mongo:27017/mern_ecommerce
+          - name: PORT
+            value: 3000
+          - name: BASE_API_URL
+            value: api
+          - name: CLIENT_URL
+            value: http://localhost:4000
+          - name: JWT_SECRET
+            value: update_your_JWT_secret
+          - name: MONGO_URI
+            value: mongodb://mongo:27017/mern_ecommerce

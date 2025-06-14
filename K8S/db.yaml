@@ -25,7 +25,7 @@ spec:
               mountPath: data
           command: [mongod --quiet --logpath]
           args: ["/dev/null"]
-    volumes:
-      - name: db_volume
-    persistentVolumeClaim:
-      claimName: my-pvc
+      volumes:
+        - name: task-pv-storage
+          persistentVolumeClaim:
+            claimName: task-pv-claim

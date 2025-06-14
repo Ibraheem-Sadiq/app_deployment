@@ -16,4 +16,4 @@ spec:
       - name: client
         build: client
         ports:
-        - containerPort: 3001
+        - containerPort: 8080

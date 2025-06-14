@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontEndService
+  name: client
 spec:
   selector:
     app: client
   ports:
-  - port: 80
-    targetPort: 80
-    type: nodePort
+  - name: http
+    targetPort: 8080
+    port: 8080
+    nodePort: 4000
