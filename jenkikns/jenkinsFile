@@ -1,104 +1,18 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 pipeline {
     agent any
 
     stages {
         stage('Build') {
             steps {
-             sh  'docker build  -t frontEnd:$BUILD_ID  server'
-             sh  'docker build  -t backEnd:$BUILD_ID  client'
-             sh  'docker build  -t database:$BUILD_ID  database'
+             sh  'docker build  -t frontEnd:$BUILD_NUMBER  server'
+             sh  'docker build  -t backEnd:$BUILD_NUMBER  client'
             }
         }
 
      stage('Push') {
             steps {
-             sh  'docker push frontEnd:$BUILD_ID'
-             sh  'docker push backEnd:$BUILD_ID' 
-             sh  'docker push database:$BUILD_ID'  
+             sh  'docker push frontEnd:$BUILD_NUMBER'
+             sh  'docker push backEnd:$BUILD_NUMBER' 
             }
         }
         stage('Test') {
@@ -108,7 +22,8 @@ pipeline {
         }
         stage('notify argocd by updating version') {
             steps {
-                sh  '($BUILD_NUMBER) > version.txt'
+                sh  'sed -i -E "s/e_commerc*/e_commerce/server:($BUILD_NUMBER)/"'
+                sh  'sed -i -E "s/e_commerc*/e_commerce/client:($BUILD_NUMBER)/"'
             }
         }
     }
