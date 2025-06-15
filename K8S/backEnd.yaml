@@ -8,6 +8,7 @@ kind: Deployment
 metadata:
   name: server
 spec:
+  type: NodePort
   selector:
     matchLabels:
       app: server
@@ -24,9 +25,9 @@ spec:
           - containerPort: 3000
         command: ["sh","-c"]
         args: ["npm run seed:db admin@devops.com admin123 && npm start"]
-        ENV:
+        env:
           - name: PORT
-            value: 3000
+            value: "3000"
           - name: BASE_API_URL
             value: api
           - name: CLIENT_URL
