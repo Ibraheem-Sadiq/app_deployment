@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: client
-        build: client
+        image: e_commerce/client:1 
         ports:
         - containerPort: 8080
