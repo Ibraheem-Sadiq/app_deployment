@@ -13,17 +13,17 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: mongodb:latest
+          image: mongo:latest
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
           volumeMounts:
-            - name: db_volume
+            - name: db-volume
               mountPath: data
           command: [mongod --quiet --logpath]
           args: ["/dev/null"]
       volumes:
-        - name: db_volume
+        - name: db-volume
           persistentVolumeClaim:
-            claimName: task-pv-claim
+            claimName: mypvc

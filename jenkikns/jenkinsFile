@@ -4,15 +4,15 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-             sh  'docker build  -t frontEnd:$BUILD_NUMBER  server'
-             sh  'docker build  -t backEnd:$BUILD_NUMBER  client'
+             sh  'docker build -t ecommerce/frontEnd:($BUILD_NUMBER) server/.'
+             sh  'docker build -t ecommerce/backEnd:($BUILD_NUMBER) client/.'
             }
         }
 
      stage('Push') {
             steps {
-             sh  'docker push frontEnd:$BUILD_NUMBER'
-             sh  'docker push backEnd:$BUILD_NUMBER' 
+             sh  'docker push ecommerce/frontEnd:($BUILD_NUMBER)'
+             sh  'docker push ecommerce/backEnd:($BUILD_NUMBER)' 
             }
         }
         stage('Test') {
@@ -22,8 +22,8 @@ pipeline {
         }
         stage('notify argocd by updating version') {
             steps {
-                sh  'sed -i -E "s/e_commerc*/e_commerce/server:($BUILD_NUMBER)/"'
-                sh  'sed -i -E "s/e_commerc*/e_commerce/client:($BUILD_NUMBER)/"'
+                sh  'sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/server:($BUILD_NUMBER)" backEnd.yaml""'
+                sh  'sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/client:($BUILD_NUMBER)" frontEnd.yaml"'
             }
         }
     }
