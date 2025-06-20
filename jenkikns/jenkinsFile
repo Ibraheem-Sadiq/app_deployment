@@ -4,15 +4,23 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-             sh  'docker build -t ecommerce/frontEnd:($BUILD_NUMBER) server/.'
-             sh  'docker build -t ecommerce/backEnd:($BUILD_NUMBER) client/.'
+                sh  'docker build -t ecommerce/frontEnd:($BUILD_NUMBER) server/.'
+                sh  'docker build -t ecommerce/backEnd:($BUILD_NUMBER) client/.'
             }
         }
 
-     stage('Push') {
+        stage('Push') {
+            
             steps {
-             sh  'docker push ecommerce/frontEnd:($BUILD_NUMBER)'
-             sh  'docker push ecommerce/backEnd:($BUILD_NUMBER)' 
+                withCredentials([
+                    usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')
+                    ]) {
+                        sh  '''
+                            echo   docker login -u ibrahim0sadek
+                            docker push ibrahim0sadek/e_commerce:frontEnd:($BUILD_NUMBER)
+                            docker push ibrahim0sadek/e_commerce:backEnd:($BUILD_NUMBER)
+                        '''
+                    } 
             }
         }
         stage('Test') {
@@ -22,9 +30,23 @@ pipeline {
         }
         stage('notify argocd by updating version') {
             steps {
-                sh  'sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/server:($BUILD_NUMBER)" backEnd.yaml""'
-                sh  'sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/client:($BUILD_NUMBER)" frontEnd.yaml"'
+                withCredentials([
+                    gitUsernamePassword(credentialsId: 'dep_rep', gitToolName: 'Default')
+                ]) 
+                    {
+                    sh    
+                    '''
+                        git clone $DEPLOYMENT_REPOSITORY
+                        cd app_deployment/K8S
+                        sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/server:($BUILD_NUMBER)" backEnd.yaml
+                        sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/client:($BUILD_NUMBER)" frontEnd.yaml
+                        git commit -m "version update v($BUILD_NUMBER)"
+                        git push
+                    '''
+                    }
             }
-        }
     }
+    }
+
+
 }
