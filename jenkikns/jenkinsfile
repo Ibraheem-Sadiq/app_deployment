@@ -4,9 +4,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh  'git clone https://github.com/Ibraheem-Sadiq/ecommerce.git'
-                sh  'docker build -t ecommerce/frontEnd:($BUILD_NUMBER) server/.'
-                sh  'docker build -t ecommerce/backEnd:($BUILD_NUMBER) client/.'
+                dir('./app_deployment/K8S'){}
+                sh  '''
+                    git clone https://github.com/Ibraheem-Sadiq/ecommerce.git
+                    docker build -t ibrahim0sadek/ecommerce/frontend:$BUILD_NUMBER ./server/.
+                    docker build -t ibrahim0sadek/ecommerce/backend:$BUILD_NUMBER  ./client/.
+                '''
             }
         }
 
@@ -18,8 +21,8 @@ pipeline {
                     ]) {
                         sh  '''
                             echo   docker login -u ibrahim0sadek
-                            docker push ibrahim0sadek/e_commerce:frontEnd:($BUILD_NUMBER)
-                            docker push ibrahim0sadek/e_commerce:backEnd:($BUILD_NUMBER)
+                            docker push ibrahim0sadek/e_commerce:frontend:$BUILD_NUMBER
+                            docker push ibrahim0sadek/e_commerce:backend:$BUILD_NUMBER
                         '''
                     } 
             }
@@ -39,8 +42,10 @@ pipeline {
                     '''
                         git clone https://github.com/Ibraheem-Sadiq/app_deployment.git/
                         cd app_deployment/K8S
-                        sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/server:($BUILD_NUMBER)" backEnd.yaml
-                        sed -i -E "s/build:(.*)[0-9]+/build: e_commerce\/client:($BUILD_NUMBER)" frontEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek/e_commerce/server:$BUILD_NUMBER/" backEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek/e_commerce/client:$BUILD_NUMBER/" frontEnd.yaml
+                        git config --global user.name "ibrahim sadek"
+                        git config --global user.email "ibrahim2506950@gmail.com"
                         git commit -m "version update v($BUILD_NUMBER)"
                         git push
                     '''
