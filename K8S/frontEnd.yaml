@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: client
-        image: ibrahim0sadek/e_commerce/client:1 
+        image: e_commerce_client:27 
