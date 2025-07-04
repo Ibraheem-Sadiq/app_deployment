@@ -2,17 +2,21 @@ pipeline {
     agent any
 
     stages {
+        stage('Clean') {
+            steps {
+                cleanWs()
+                }
+        }
         stage('Build') {
             steps {
-                dir('./app_deployment/K8S'){}
                 sh  '''
                     git clone https://github.com/Ibraheem-Sadiq/ecommerce.git
-                    docker build -t ibrahim0sadek/ecommerce/frontend:$BUILD_NUMBER ./server/.
-                    docker build -t ibrahim0sadek/ecommerce/backend:$BUILD_NUMBER  ./client/.
+                    cd ./ecommerce
+                    docker build -t ibrahim0sadek/ecommerce_frontend:$BUILD_NUMBER ./server/.
+                    docker build -t ibrahim0sadek/ecommerce_backend:$BUILD_NUMBER  ./client/.
                 '''
             }
         }
-
         stage('Push') {
             
             steps {
@@ -20,16 +24,11 @@ pipeline {
                     usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')
                     ]) {
                         sh  '''
-                            echo   docker login -u ibrahim0sadek
-                            docker push ibrahim0sadek/e_commerce:frontend:$BUILD_NUMBER
-                            docker push ibrahim0sadek/e_commerce:backend:$BUILD_NUMBER
+                            docker login -u $DOCKER_REGISTRY_USER -p DOCKER_REGISTRY_PWD
+                            docker push ibrahim0sadek/ecommerce_frontend:$BUILD_NUMBER
+                            docker push ibrahim0sadek/ecommerce_backend:$BUILD_NUMBER
                         '''
                     } 
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
             }
         }
         stage('notify argocd by updating version') {
@@ -38,14 +37,15 @@ pipeline {
                     gitUsernamePassword(credentialsId: 'dep_rep', gitToolName: 'Default')
                 ]) 
                     {
-                    sh    
-                    '''
+                    sh'''
                         git clone https://github.com/Ibraheem-Sadiq/app_deployment.git/
                         cd app_deployment/K8S
-                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek/e_commerce/server:$BUILD_NUMBER/" backEnd.yaml
-                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek/e_commerce/client:$BUILD_NUMBER/" frontEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_server:$BUILD_NUMBER/" backEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_client:$BUILD_NUMBER/" frontEnd.yaml
                         git config --global user.name "ibrahim sadek"
                         git config --global user.email "ibrahim2506950@gmail.com"
+                        git add backEnd.yaml
+                        git add frontEnd.yaml
                         git commit -m "version update v($BUILD_NUMBER)"
                         git push
                     '''
@@ -53,6 +53,4 @@ pipeline {
             }
     }
     }
-
-
 }
