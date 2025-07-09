@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: client
-        image: ibrahim0sadek/ecommerce_client:45 
+        image: ibrahim0sadek/ecommerce_frontend:45 

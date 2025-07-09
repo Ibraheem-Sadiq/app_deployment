@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: ibrahim0sadek/ecommerce_server:45
+        image: ibrahim0sadek/ecommerce_backend:45
         command: ["sh","-c"]
         args: ["npm run seed:db admin@devops.com admin123 && npm start"]
         env:

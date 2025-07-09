@@ -40,8 +40,8 @@ pipeline {
                     sh'''
                         git clone https://github.com/Ibraheem-Sadiq/app_deployment.git/
                         cd app_deployment/K8S
-                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_server:$BUILD_NUMBER/" backEnd.yaml
-                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_client:$BUILD_NUMBER/" frontEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_backend:$BUILD_NUMBER/" backEnd.yaml
+                        sed -i -E "s/image:(.*)[0-9]+/image: ibrahim0sadek\\/ecommerce_frontend:$BUILD_NUMBER/" frontEnd.yaml
                         git config --global user.name "ibrahim sadek"
                         git config --global user.email "ibrahim2506950@gmail.com"
                         git add backEnd.yaml
